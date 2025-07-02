@@ -31,18 +31,18 @@ def get_motorista(db: Session, motorista_id: int):
 def update_motorista(db: Session, motorista: MotoristaCreate, motorista_id: int):
     '''Atualiza um motorista existente no banco de dados.'''
     # busca o motorista pelo ID
-    motorista_queryset = db.query(Motorista).filter(Motorista.id == motorista_id)
+    motorista_queryset = db.query(Motorista).filter(Motorista.id == motorista_id).first()
     # verifica se o motorista existe
     if motorista_queryset:
         # Atualiza os campos do motorista com os dados fornecidos
         for key, value in motorista.model_dump().items():
-            setattr(motorista_queryset.first(), key, value)
+            setattr(motorista_queryset, key, value)
         # faz o commit para salvar as alterações
         db.commit()
         # atualiza a instancia do motorista para refletir as alterações
         db.refresh(motorista_queryset)
         # retorna a instancia do motorista atualizada
-        return motorista_queryset.first()
+        return motorista_queryset
 
     
 def delete_motorista(db: Session, motorista_id: int):
