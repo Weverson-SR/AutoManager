@@ -46,10 +46,17 @@ async def delete_motorista(motorista_id: int, db: Session = Depends(get_db)):
     """
     Deleta um motorista pelo ID.
     """
+    motorista = services.get_motorista(db, motorista_id)
+    if not motorista:
+        raise HTTPException(status_code=404, detail="Motorista não encontrado")
+    # Verifica se o motorista possui veículos vinculados
+    if motorista.veiculos and len(motorista.veiculos) > 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Não é possível excluir o motorista pois existem veículos vinculados a ele."
+        )
     db_deleted_motorista = services.delete_motorista(db, motorista_id)
-    if db_deleted_motorista:
-        return db_deleted_motorista
-    raise HTTPException(status_code=404, detail="Motorista não encontrado")
+    return db_deleted_motorista
     
 
 # Area responsavel pela criação dos modelos da fastapi da classe Veiculo
@@ -75,6 +82,10 @@ async def create_new_veiculo(veiculo: schemas.VeiculoCreate, db: Session = Depen
     """
     Cria um novo veículo.
     """
+    # Verifica se o motorista já possui um veículo
+    veiculo_exists = db.query(models.Veiculo).filter(models.Veiculo.motorista_id == veiculo.motorista_id).all()
+    if veiculo_exists:
+        raise HTTPException(status_code=400,detail="Este motorista já possui um veículo cadastrado.")
     return services.create_veiculo(db, veiculo)
 
 @app.put("/veiculos/{veiculo_id}", response_model=schemas.Veiculo)
@@ -92,7 +103,10 @@ async def delete_veiculo(veiculo_id: int, db: Session = Depends(get_db)):
     """
     Deleta um veículo pelo ID.
     """
-    db_deleted_veiculo = services.delete_veiculo(db, veiculo_id)
-    if db_deleted_veiculo:
-        return db_deleted_veiculo
-    raise HTTPException(status_code=404, detail="Veículo não encontrado")
+    veiculo = services.get_veiculo(db, veiculo_id)
+    if not veiculo:
+        raise HTTPException(status_code=404, detail="Veículo não encontrado")
+    # Armazena o objeto antes de deletar
+    veiculo_delete = schemas.Veiculo.model_validate(veiculo)
+    services.delete_veiculo(db, veiculo_id)
+    return veiculo_delete
