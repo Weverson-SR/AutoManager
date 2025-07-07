@@ -2,9 +2,19 @@ from fastapi import FastAPI, Depends, HTTPException
 from . import services, models, schemas
 from .database import get_db, engine
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 # iniciar a FASTAPI
 app = FastAPI()
+
+# Configuração do CORS para permitir requisições
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas as origens
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos HTTP
+    allow_headers=["*"],  # Permite todos os cabeçalhos
+)
 
 # Area responsavel pela criação dos modelos da fastapi da classe Motorista
 @app.get("/motoristas/", response_model=list[schemas.Motorista])
