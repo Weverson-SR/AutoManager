@@ -30,7 +30,7 @@ function App() {
     setError(null);
   };
 
-  // Função para validar placa do veículo (formato brasileiro)
+  // Função para validar placa do veículo
   const validateVehiclePlate = (plate) => {
     const plateRegex = /^[A-Z]{3}[0-9]{4}$|^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
     return plateRegex.test(plate.toUpperCase());
@@ -122,6 +122,7 @@ function App() {
       if (response.ok) {
         const data = await response.json();
         setDriverResult(data);
+        console.log('Driver Result:', data);
       } else if (response.status === 404) {
         setError('Motorista não encontrado.');
       } else {
@@ -183,6 +184,7 @@ function App() {
 
       const data = await response.json();
       setAllDrivers(data);
+      console.log('All Drivers:', data);
       setShowAllDrivers(true);
       
     } catch (error) {
@@ -333,7 +335,7 @@ function App() {
           <h4>Resultado - Motorista</h4>
           <p><strong>ID:</strong> {driverResult.id}</p>
           <p><strong>Nome:</strong> {driverResult.name || driverResult.nome}</p>
-          <p><strong>Placa do Veículo:</strong> {driverResult.plate || driverResult.placa || 'Não informado'}</p>
+          <p><strong>Placa do Veículo:</strong> {driverResult?.placa || 'Não informado'}</p>
         </div>
       )}
 
@@ -343,7 +345,7 @@ function App() {
           <h4>Resultado - Veículo</h4>
           <p><strong>ID:</strong> {vehicleResult.id}</p>
           <p><strong>Placa:</strong> {vehicleResult.plate || vehicleResult.placa}</p>
-          <p><strong>Nome do Motorista:</strong> {vehicleResult.name || vehicleResult.motorista_nome || 'Não informado'}</p>
+          <p><strong>Nome do Motorista:</strong> {vehicleResult.nome || vehicleResult.name || 'Não informado'}</p>
         </div>
       )}
 
@@ -365,7 +367,7 @@ function App() {
                   <tr key={driver.id}>
                     <td>{driver.id}</td>
                     <td>{driver.name || driver.nome}</td>
-                    <td>{driver.plate || driver.placa || 'Não informado'}</td>
+                    <td>{driver.plate || driver?.placa || driver.veiculo?.placa || driver.vehicle?.plate || 'Não informado'}</td>
                   </tr>
                 ))}
               </tbody>
