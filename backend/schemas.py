@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 '''Schema do Motorista'''
 
@@ -15,6 +16,7 @@ class MotoristaCreate(MotoristaBase):
 # Schema para resposta do Motorista (O que ele vai retornar)
 class Motorista(MotoristaBase):
     id: int
+    placa: Optional[str] = None  # Placa do veículo associado ao motorista
 
     class Config:
         from_attributes = True
@@ -35,7 +37,7 @@ class VeiculoCreate(VeiculoBase):
 # Schema para resposta do Veículo (O que ele vai retornar)
 class Veiculo(VeiculoBase):
     id: int
-    motorista: Motorista # Motorista associado ao veículo
+    nome: str # Nome do motorista associado ao veículo
 
     class Config:
         from_attributes = True

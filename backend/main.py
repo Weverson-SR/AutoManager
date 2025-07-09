@@ -56,15 +56,20 @@ async def delete_motorista(motorista_id: int, db: Session = Depends(get_db)):
     """
     Deleta um motorista pelo ID.
     """
-    motorista = services.get_motorista(db, motorista_id)
+    motorista = db.query(models.Motorista).filter(models.Motorista.id == motorista_id).first()
+
+    # Verifica se o motorista existe
     if not motorista:
         raise HTTPException(status_code=404, detail="Motorista não encontrado")
+    
     # Verifica se o motorista possui veículos vinculados
-    if motorista.veiculos and len(motorista.veiculos) > 0:
+    veiculo = db.query(models.Veiculo).filter(models.Veiculo.motorista_id == motorista_id).first()
+    if veiculo:
         raise HTTPException(
             status_code=400,
             detail="Não é possível excluir o motorista pois existem veículos vinculados a ele."
         )
+    
     db_deleted_motorista = services.delete_motorista(db, motorista_id)
     return db_deleted_motorista
     
