@@ -68,6 +68,7 @@ const Create = () => {
       <div className="form-section">
         <form onSubmit={handleSubmit}>
           <div className="form-row">
+            {/*Cadastro do nome do motorista*/}
             <div className="form-group">
               <label htmlFor="driverName">Nome do Motorista *</label>
               <input
@@ -80,6 +81,7 @@ const Create = () => {
                 maxLength={100}
               />
             </div>
+            {/*Cadastro da placa do veiculo*/}
             <div className="form-group">
               <label htmlFor="vehiclePlate">Placa do Veículo *</label>
               <input
@@ -92,6 +94,25 @@ const Create = () => {
                 maxLength={8}
               />
               <small>Formato: ABC1234 (antigo) ou ABC1D23 (Mercosul)</small>
+            </div>
+            {/*Adicionando a parte para receber o modelo do veiculo no cadastro*/}
+            <div className='form-group'>
+              <label htmlFor="vehicleModel">Modelo do veiculo *</label>
+              <input 
+                type="text"
+                id=""
+                placeholder='Ex: Volvo'
+                maxLength={15}
+              />
+            </div>
+            {/*Adicionando a parte para receber a data criação do cadastro*/}
+            <div className='form-group'>
+              <label htmlFor="cadastroData">Data do cadastro *</label>
+              <input 
+                min={2000}
+                type="date"
+                id=""
+              />
             </div>
           </div>
           <button 
