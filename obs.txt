@@ -1,2 +1,0 @@
-Ao atualizar o motorista você apenas atualiza o nome dele para possiveis erros que tiveram no cadastro
-Ao atualizar o veiculo você está atualizando a placa do veiculo associada ao ID MOTORISTA   
