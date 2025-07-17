@@ -4,6 +4,8 @@ import { driversApi, vehiclesApi, validateVehiclePlate } from '../services/Api';
 const Create = () => {
   const [driverName, setDriverName] = useState('');
   const [vehiclePlate, setVehiclePlate] = useState('');
+  const [vehicleModel, setvehicleModel] = useState(''); // adiconado para receber o modelo
+  const [cadastroData, setCadastroData] = useState(''); // adicionado para receber a data 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -20,6 +22,16 @@ const Create = () => {
     if (!vehiclePlate.trim()) {
       setError('Placa do veículo é obrigatória');
       return;
+    }
+
+    if (!vehicleModel.trim()){
+      setError('Modelo do veiculo é obrigatorio')
+      return;
+    }
+
+    if (!cadastroData.trim()){
+      setError('Data do cadastro é obrigatória')
+      return
     }
 
     const plateFormatted = vehiclePlate.toUpperCase().replace(/\s+/g, '');
@@ -40,12 +52,16 @@ const Create = () => {
       // 2. Cadastrar veículo vinculado ao motorista
       await vehiclesApi.create({ 
         placa: plateFormatted, 
-        motorista_id: motorista.id 
+        motorista_id: motorista.id,
+        modelo: vehicleModel.trim(),
+        data_cadastro: cadastroData
       });
 
       // Limpar formulário após sucesso
       setDriverName('');
       setVehiclePlate('');
+      setvehicleModel('');
+      setCadastroData('');
       setSuccess(true);
       
       setTimeout(() => {
@@ -53,7 +69,7 @@ const Create = () => {
       }, 3000);
       
     } catch (error) {
-      console.error('Erro no cadastro:', error);
+      console.error('Erro no cadastro', error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -91,7 +107,7 @@ const Create = () => {
                 onChange={(e) => setVehiclePlate(e.target.value.toUpperCase())}
                 placeholder="ABC1234 ou ABC1D23"
                 required
-                maxLength={8}
+                maxLength={7}
               />
               <small>Formato: ABC1234 (antigo) ou ABC1D23 (Mercosul)</small>
             </div>
@@ -100,9 +116,12 @@ const Create = () => {
               <label htmlFor="vehicleModel">Modelo do veiculo *</label>
               <input 
                 type="text"
-                id=""
+                id="vehicleModel"
+                value={vehicleModel}
+                onChange={(e) => setvehicleModel(e.target.value)}
                 placeholder='Ex: Volvo'
-                maxLength={15}
+                required
+                maxLength={30}
               />
             </div>
             {/*Adicionando a parte para receber a data criação do cadastro*/}
@@ -111,7 +130,10 @@ const Create = () => {
               <input 
                 min={2000}
                 type="date"
-                id=""
+                id="cadastroData"
+                value={cadastroData}
+                onChange={(e) => setCadastroData(e.target.value)}
+                required
               />
             </div>
           </div>

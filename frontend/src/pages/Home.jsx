@@ -178,6 +178,7 @@ const Home = () => {
           <p><strong>ID:</strong> {driverResult.id}</p>
           <p><strong>Nome:</strong> {driverResult.name || driverResult.nome}</p>
           <p><strong>Placa do Veículo:</strong> {driverResult?.placa || 'Não informado'}</p>
+          <p><strong>Modelo: </strong> {driverResult?.modelo || 'Não informado'}</p>
         </div>
       )}
 
@@ -188,6 +189,7 @@ const Home = () => {
           <p><strong>ID:</strong> {vehicleResult.id}</p>
           <p><strong>Placa:</strong> {vehicleResult.plate || vehicleResult.placa}</p>
           <p><strong>Nome do Motorista:</strong> {vehicleResult.nome || vehicleResult.name || 'Não informado'}</p>
+          <p><strong>Modelo: </strong> {vehicleResult.modelo || 'Não informado'}</p>
         </div>
       )}
 
@@ -202,6 +204,7 @@ const Home = () => {
                   <th>ID do Motorista</th>
                   <th>Nome</th>
                   <th>Placa do Veículo</th>
+                  <th>Modelo</th>
                 </tr>
               </thead>
               <tbody>
@@ -210,6 +213,7 @@ const Home = () => {
                     <td>{driver.id}</td>
                     <td>{driver.name || driver.nome}</td>
                     <td>{driver.plate || driver?.placa || driver.veiculo?.placa || driver.vehicle?.plate || 'Não informado'}</td>
+                    <td>{driver.modelo || driver?.modelo || 'Não informado'}</td>
                   </tr>
                 ))}
               </tbody>
