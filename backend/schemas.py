@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from datetime import date
 
 '''Schema do Motorista'''
 
@@ -41,7 +41,7 @@ class VeiculoCreate(VeiculoBase):
 class Veiculo(VeiculoBase):
     id: int
     nome: str # Nome do motorista associado ao veículo
-    data_cadastro: datetime  # Data de cadastro do motorista
+    data_cadastro: Optional[date] = None  # Data de cadastro do motorista
 
     class Config:
         from_attributes = True
