@@ -45,19 +45,25 @@ const Create = () => {
     setError(null);
     setSuccess(false);
 
+    let createdDriverId = null;
+
     try {
       // 1. Cadastrar motorista
-      const motorista = await driversApi.create({ nome: driverName.trim() });
+      const motorista = await driversApi.create({ 
+        nome: driverName.trim(),
+        data_cadastro: cadastroData
+      });
+
+      createdDriverId = motorista.id;
 
       // 2. Cadastrar veículo vinculado ao motorista
       await vehiclesApi.create({ 
         placa: plateFormatted, 
         motorista_id: motorista.id,
-        modelo: vehicleModel.trim(),
-        data_cadastro: cadastroData
+        modelo: vehicleModel.trim()
       });
 
-      // Limpar formulário após sucesso
+      // Se chegou até aqui deu certo , isso limpa os campos
       setDriverName('');
       setVehiclePlate('');
       setvehicleModel('');
@@ -70,6 +76,17 @@ const Create = () => {
       
     } catch (error) {
       console.error('Erro no cadastro', error);
+
+      if (createdDriverId){
+        try{
+          await driversApi.delete(createdDriverId);
+          console.log('Motorista removido,pois a placa já está vinculado a outro')
+        } catch (deleteError) {
+          console.error('Erro ao remover motorista: ', deleteError)
+
+        }
+      }
+
       setError(error.message);
     } finally {
       setLoading(false);
