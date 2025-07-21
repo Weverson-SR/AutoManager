@@ -87,7 +87,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      <h1>Sistema de Cadastro de Motoristas e Veículos</h1>
+      <h1>Busca de Motoristas e Veículos</h1>
       
       {/* Seção de Ações */}
       <div className="actions-section">
