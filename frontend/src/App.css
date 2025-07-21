@@ -32,7 +32,8 @@ body {
 .home-page,
 .create-page,
 .update-page,
-.delete-page {
+.delete-page,
+.maintence-page {
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -40,7 +41,8 @@ body {
 .home-page h1,
 .create-page h1,
 .update-page h1,
-.delete-page h1 {
+.delete-page h1,
+.maintence-page h1{
   color: #2c3e50;
   margin-bottom: 2rem;
   font-size: 2.5rem;

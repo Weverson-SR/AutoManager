@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Create from './pages/Create';
 import Update from './pages/Update';
 import Delete from './pages/Delete';
+import Maintence  from './pages/Maintence';
 import './App.css';
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         return <Update />;
       case 'delete':
         return <Delete />;
+      case 'maintence':
+        return <Maintence />; 
       default:
         return <Home />;
     }
