@@ -3,10 +3,11 @@ import './Sidebar.css';
 
 const Sidebar = ({ currentPage, setCurrentPage, loading }) => {
   const menuItems = [
-    { id: 'home', label: 'Início'},
+    { id: 'home', label: 'Busca'},
     { id: 'create', label: 'Cadastrar'},
     { id: 'update', label: 'Atualizar'},
     { id: 'delete', label: 'Deletar'},
+    { id: 'maintence', label: 'Abastacimento e Pneus' }
   ];
 
   return (
