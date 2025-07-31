@@ -126,13 +126,13 @@ export const loadData = async (id, type = 'motorista') => {
 
         if (type === 'motorista'){
             // Usa a API existente
-            const {driversAPI} = await import('../services/Api');
+            const { driversApi } = await import('../services/Api');
             // Busca pelo id do motorista
-            dataFastAPI = await driversAPI.getById(id);
+            dataFastAPI = await driversApi.getById(id);
         }else{
             // Busca por id do veiculo
-            const {vehiclesAPI} = await import('../services/Api')
-            dataFastAPI = await vehiclesAPI.getById(id);
+            const { vehiclesApi } = await import('../services/Api')
+            dataFastAPI = await vehiclesApi.getById(id);
         }
 
         // Cria a estrutura no IndexedDB
@@ -179,7 +179,6 @@ export const saveEvent = async (id, dataMaintenance) => {
 
         // Cria o evento| relação
         const event = {
-            id: Date.now(),
             data: dateToday.toISOString().split('T')[0], // estilo americano YYYY-MM-DD
             hora: dateToday.toTimeString().split(' ')[0], // HH:MM:SS
             ...dataMaintenance // Dados dos pneus e do abastecimento
