@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { loadData, saveEvent, getMaintenanceHistory } from '../services/indexedDBService';
 
-const Maintence = () => {
+const Maintenance = () => {
 
   const [searchDriverId, setSearchDriverId] = useState('');
   const [searchVehicleId, setSearchVehicleId] = useState('');
@@ -14,7 +14,7 @@ const Maintence = () => {
   const [manutencaoData, setManutencaoData] = useState({ // CORRIGIDO: era manutenaoData
     abastecimento: {
       litros: '',
-      tipo: 'gasolina' // CORRIGIDO: era 'Diesel'
+      tipo: 'Diesel' // CORRIGIDO: era 'Diesel'
     },
     pneus: {
       dianteiro_esquerdo: 'bom',
@@ -157,8 +157,40 @@ const Maintence = () => {
     }));
   };
 
+  // Função para formartar a data
+  const formatDate = (date) => {
+    const [day, month, year] = date.split('/');
+    const months = [
+      'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+    ];
+    return `${day} ${months[parseInt(month) - 1]} ${year}`
+  };
+
+  // Função para cores no tipo de combustivel
+  const getColorCombustivel = (type) => {
+    const colors = {
+      'gasolina': '#e74c3c',
+      'etanol': '#27ae60',
+      'diesel': '#f39c12',
+    };
+    return colors[type.toLowerCase()] || '#667eea';
+  }
+
+  // Cores para os status dos pneus
+  const getColorPneu = (status) => {
+    const colors = {
+      'bom': '',
+      'ruim': '',
+      'critico': ''
+    };
+    return colors[status.toLowerCase()] || '#95a5a6'
+  }
+
+
+
   return (
-    <div className="maintence-page">
+    <div className="maintenance-page">
       <h1>Área de preenchimento de abastecimento e pneus</h1>
 
       {/* Seção de Busca */}
@@ -178,7 +210,7 @@ const Maintence = () => {
               />
             </div>
             <button
-              className="btn"
+              className="btn btn-primary"
               onClick={searchByDriverId}
               disabled={!searchDriverId || loading}
             >
@@ -202,7 +234,7 @@ const Maintence = () => {
               />
             </div>
             <button
-              className="btn"
+              className="btn btn-primary"
               onClick={searchByVehicleId}
               disabled={!searchVehicleId || loading}
             >
@@ -217,9 +249,9 @@ const Maintence = () => {
         <div className="maintenance-form">
           <h2>Registrar Manutenção</h2>
 
-          {/* Abastecimento - SEM VALOR */}
+          {/* Abastecimento */}
           <div className="action-card">
-            <h3>Abastecimento</h3>
+            <h3>⛽ Abastecimento</h3>
             <div className="form-row">
               <div className="form-group">
                 <label>Tipo de Combustível</label>
@@ -246,7 +278,7 @@ const Maintence = () => {
             </div>
           </div>
 
-          {/* Pneus - Bom/Ruim/Crítico */}
+          {/* Pneus */}
           <div className="action-card">
             <h3>🛞 Estado dos Pneus</h3>
             <div className="pneus-grid">
@@ -278,7 +310,7 @@ const Maintence = () => {
               onClick={salvarManutencao}
               disabled={salvandoManutencao}
             >
-              {salvandoManutencao ? ' Salvando...' : ' Salvar Manutenção'}
+              {salvandoManutencao ? '⏳ Salvando...' : '💾 Salvar Manutenção'}
             </button>
           </div>
         </div>
@@ -287,14 +319,14 @@ const Maintence = () => {
       {/* Exibição de Erros */}
       {error && (
         <div className="error-message">
-          <strong>Erro:</strong> {error}
+          <strong>❌ Erro:</strong> {error}
         </div>
       )}
 
       {/* Resultado - Motorista */}
       {driverResult && (
         <div className="result-card">
-          <h4> Resultado - Motorista</h4>
+          <h4>👤 Resultado - Motorista</h4>
           <p><strong>ID:</strong> {driverResult.id}</p>
           <p><strong>Nome:</strong> {driverResult.nome}</p>
           <p><strong>Placa do Veículo:</strong> {driverResult.placa || 'Não informado'}</p>
@@ -306,7 +338,7 @@ const Maintence = () => {
       {/* Resultado - Veículo */}
       {vehicleResult && (
         <div className="result-card">
-          <h4>Resultado - Veículo</h4>
+          <h4>🚗 Resultado - Veículo</h4>
           <p><strong>ID:</strong> {vehicleResult.id}</p>
           <p><strong>Placa:</strong> {vehicleResult.placa}</p>
           <p><strong>Nome do Motorista:</strong> {vehicleResult.nome || 'Não informado'}</p>
@@ -315,27 +347,110 @@ const Maintence = () => {
         </div>
       )}
 
-      {/* HISTÓRICO DE MANUTENÇÃO */}
-      {historico && Object.keys(historico).length > 0 && (
+      {/* HISTÓRICO DE MANUTENÇÃO - TIMELINE ATUALIZADO */}
+      {historico && Object.keys(historico).length > 0 ? (
         <div className="history-section">
-          <h3> Histórico de Manutenção</h3>
-          {Object.entries(historico).map(([mes, eventos]) => (
-            <div key={mes} className="month-history">
-              <h4>📅 {mes}</h4>
-              {eventos.map((evento, index) => (
-                <div key={index} className="event-card">
-                  <p><strong>Data:</strong> {evento.data} às {evento.hora}</p>
-                  <p><strong>Combustível:</strong> {evento.abastecimento.litros}L de {evento.abastecimento.tipo}</p>
-                  <p><strong>Pneus:</strong>
-                    DE: {evento.pneus.dianteiro_esquerdo},
-                    DD: {evento.pneus.dianteiro_direito},
-                    TE: {evento.pneus.traseiro_esquerdo},
-                    TD: {evento.pneus.traseiro_direito}
-                  </p>
+          <h3>📋 Histórico de Manutenção</h3>
+
+          <div className="timeline-container">
+            {Object.entries(historico)
+              .sort(([a], [b]) => new Date(b) - new Date(a)) // Ordena por data decrescente
+              .map(([mes, eventos]) => (
+                <div key={mes} className="month-history">
+                  <div className="month-header">
+                    📅 {mes}
+                    <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                      ({eventos.length} evento{eventos.length !== 1 ? 's' : ''})
+                    </span>
+                  </div>
+
+                  {eventos
+                    .sort((a, b) => new Date(b.data + ' ' + b.hora) - new Date(a.data + ' ' + a.hora)) // Ordena eventos por data/hora
+                    .map((evento, index) => (
+                      <div key={index} className="event-card">
+                        <div className="event-header">
+                          <div className="event-date">
+                            🗓️ {formatDate(evento.data)}
+                            <span className="event-time">às {evento.hora}</span>
+                          </div>
+                        </div>
+
+                        <div className="event-details">
+                          {/* Informações de Combustível */}
+                          <div className="detail-group">
+                            <div className="detail-label">
+                              ⛽ Abastecimento
+                            </div>
+                            <div className="detail-value">
+                              <strong>{evento.abastecimento.litros}L</strong>
+                              <span
+                                className="fuel-badge"
+                                style={{ backgroundColor: getColorCombustivel(evento.abastecimento.tipo) }}
+                              >
+                                {evento.abastecimento.tipo}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Informações de Pneus */}
+                          <div className="detail-group">
+                            <div className="detail-label">
+                              🛞 Estado dos Pneus
+                            </div>
+                            <div className="detail-value">
+                              <div className="tire-grid">
+                                <div className="tire-item">
+                                  <div className="tire-position">DE</div>
+                                  <div
+                                    className="tire-status"
+                                    style={{ color: getColorPneu(evento.pneus.dianteiro_esquerdo) }}
+                                  >
+                                    {evento.pneus.dianteiro_esquerdo}
+                                  </div>
+                                </div>
+                                <div className="tire-item">
+                                  <div className="tire-position">DD</div>
+                                  <div
+                                    className="tire-status"
+                                    style={{ color: getColorPneu(evento.pneus.dianteiro_direito) }}
+                                  >
+                                    {evento.pneus.dianteiro_direito}
+                                  </div>
+                                </div>
+                                <div className="tire-item">
+                                  <div className="tire-position">TE</div>
+                                  <div
+                                    className="tire-status"
+                                    style={{ color: getColorPneu(evento.pneus.traseiro_esquerdo) }}
+                                  >
+                                    {evento.pneus.traseiro_esquerdo}
+                                  </div>
+                                </div>
+                                <div className="tire-item">
+                                  <div className="tire-position">TD</div>
+                                  <div
+                                    className="tire-status"
+                                    style={{ color: getColorPneu(evento.pneus.traseiro_direito) }}
+                                  >
+                                    {evento.pneus.traseiro_direito}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               ))}
-            </div>
-          ))}
+          </div>
+        </div>
+      ) : historico && (
+        <div className="history-section">
+          <h3>📋 Histórico de Manutenção</h3>
+          <div className="empty-history">
+            Nenhum histórico de manutenção encontrado
+          </div>
         </div>
       )}
 
@@ -350,4 +465,4 @@ const Maintence = () => {
   );
 };
 
-export default Maintence;
+export default Maintenance;

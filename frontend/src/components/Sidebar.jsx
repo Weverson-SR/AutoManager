@@ -7,7 +7,7 @@ const Sidebar = ({ currentPage, setCurrentPage, loading }) => {
     { id: 'create', label: 'Cadastrar'},
     { id: 'update', label: 'Atualizar'},
     { id: 'delete', label: 'Deletar'},
-    { id: 'maintence', label: 'Abastacimento e Pneus' }
+    { id: 'maintenance', label: 'Abastacimento e Pneus' }
   ];
 
   return (
